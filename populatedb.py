@@ -1,7 +1,8 @@
 # populatedb.py
 
 from constants import Const
-from json import loads
+
+from bson.json_util import loads
 from os.path import isfile
 from pymongo import MongoClient
 from sys import exit
