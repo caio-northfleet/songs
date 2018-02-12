@@ -15,20 +15,53 @@ mongo = PyMongo(app)
 def get_songs_collection():
     return mongo.db[Const.SONGS_COLLECTION]
 
+
 @app.route('/songs', methods=['GET'])
-def get_songs():
+def get_all_songs():
     output = []
     for song in get_songs_collection().find():
       song_id = str(song.pop('_id'))
       song['song_id'] = song_id
       output.append(song)
-    return jsonify({'result' : output})
+    return jsonify({'result': output})
 
-@app.route('/song', methods=['PUT'])
+
+@app.route('/songs/avg/difficulty', methods=['GET'])
+def get_avg_difficulty():
+    result = list(get_songs_collection().aggregate([{
+      '$group': {
+        '_id': 'null',
+        'average': {
+          '$avg': "$difficulty"
+        }
+      }
+    }]))
+    output = {'average_difficulty': result[0]['average']}
+    return jsonify({'result': output})
+
+
+@app.route('/songs/search', methods=['GET'])
+def search_songs():
+    return jsonify({'result': 'wip'})
+
+
+@app.route('/songs/rating', methods=['POST'])
+def add_song_rating():
+    return jsonify({'result': 'wip'})
+
+
+@app.route('/songs/avg/rating/', methods=['GET'])
+def get_avg_rating(song_id):
+    print(song_id)
+    return jsonify({'result': 'wip'})
+
+
+@app.route('/songs', methods=['PUT'])
 def add_song():
     song_id = get_songs_collection().insert(request.json)
-    output = {'song_id' : str(song_id)}
-    return jsonify({'result' : output})
+    output = {'song_id': str(song_id)}
+    return jsonify({'result': output})
+
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', debug = True)
+    app.run(host = '0.0.0.0', debug = True)
