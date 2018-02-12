@@ -28,25 +28,29 @@ def get_all_songs():
 
 @app.route('/songs/avg/difficulty', methods=['GET'])
 def get_avg_difficulty():
-    result = list(get_songs_collection().aggregate([{
-      '$group': {
-        '_id': 'null',
-        'average': {
-          '$avg': "$difficulty"
-        }
-      }
-    }]))
-    output = {'average_difficulty': result[0]['average']}
+
+    aggregate_expression = []
+
+    level = request.args.get('level')
+    if level is not None:
+        aggregate_expression.append({'$match': {'level': int(level)}})
+    aggregate_expression.append({'$group': {'_id': 'null', 'average': {'$avg': "$difficulty"}}})
+
+    result = list(get_songs_collection().aggregate(aggregate_expression))
+
+    output = {'average_difficulty': result[0]['average'] if len(result) > 0 else -1}
     return jsonify({'result': output})
 
 
 @app.route('/songs/search', methods=['GET'])
 def search_songs():
+
     return jsonify({'result': 'wip'})
 
 
 @app.route('/songs/rating', methods=['POST'])
 def add_song_rating():
+
     return jsonify({'result': 'wip'})
 
 
