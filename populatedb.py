@@ -7,8 +7,18 @@ from os.path import isfile
 from pymongo import MongoClient
 from sys import exit
 
+
+def get_songs_db():
+    return MongoClient()[Const.SONGS_DB]
+
+
 def get_songs_collection():
-    return MongoClient()[Const.SONGS_DB][Const.SONGS_COLLECTION]
+    return get_songs_db()[Const.SONGS_COLLECTION]
+
+
+def get_ratings_collection():
+    return get_songs_db()[Const.RATINGS_COLLECTION]
+
 
 def load_songs():
     if not isfile(Const.SONGS_FILE):
@@ -20,11 +30,20 @@ def load_songs():
             songs.append(loads(line.rstrip('\n')))
     return songs
 
+
+def clean_up_collection(collection, name):
+    print("Cleaning up 'MongoDB.{}.{}'...".format(Const.SONGS_DB, name))
+    collection.drop()
+
+
 def main():
-    print("Loading contents of file '{}' into 'MongoDB.{}.{}'..."
-        .format(Const.SONGS_FILE, Const.SONGS_DB, Const.SONGS_COLLECTION))
-    get_songs_collection().drop()
+    clean_up_collection(get_ratings_collection(), Const.RATINGS_COLLECTION)
+    clean_up_collection(get_songs_collection(), Const.SONGS_COLLECTION)
+    print("Populating 'MongoDB.{}.{}' with items from file {}..."
+        .format(Const.SONGS_DB, Const.SONGS_COLLECTION, Const.SONGS_FILE))
     get_songs_collection().insert_many(load_songs())
+    print("Done!")
+
 
 if __name__ == "__main__":
     main()
