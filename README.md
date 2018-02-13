@@ -102,7 +102,7 @@ curl -X GET "http://localhost:5000/songs/search?message=ki"
 
 curl -X GET "http://localhost:5000/songs"
 ```json
-  {
+{
     "result": [
     {
       "artist": "The Yousicians",
@@ -193,4 +193,5 @@ curl -X GET "http://localhost:5000/songs"
       "title": "Babysitting"
     }
   ]
-}```
+}
+```
