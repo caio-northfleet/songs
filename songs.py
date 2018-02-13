@@ -86,12 +86,15 @@ def add_song_rating():
 def get_avg_rating(song_id):
     aggregate_expression = [
         {'$match': {'song_id': ObjectId(song_id)}},
-        {'$group': {'_id': 'null', 'average': {'$avg': '$rating'}}}
+        {'$group': {'_id': 'null', 'average': {'$avg': '$rating'},
+            'min': {'$min': '$rating'}, 'max': {'$max': '$rating'}}}
     ]
     result = list(get_ratings_collection().aggregate(aggregate_expression))
-    output = {'average_rating': result[0]['average']
-        if len(result) > 0 else -1}
-    return jsonify({'result': output})
+    if len(result) > 0:
+        output = {'average_rating': result[0]['average'],
+            'min_rating': result[0]['min'], 'max_rating': result[0]['max']}
+        return jsonify({'result': output})
+    return jsonify({'result': 'no results found'})
 
 
 if __name__ == '__main__':
