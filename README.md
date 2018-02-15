@@ -22,6 +22,13 @@
   - adds a rating 'r' to the song with identifier 'id' (rating being an integer between 1 and 5).
 * [GET] **/songs/avg/rating/<song_id>**
   - returns the average, the lowest and the highest rating of the song with identifier 'song_id'.
+  
+## Known Issues
+* There is no unit testing. I have indeed take a look at http://flask.pocoo.org/docs/0.12/testing/ but didn't have time to learn it an apply to the solution. Also, I haven't got through the unittest package of Python to better understand how to unit test Python code.
+* There is no proper input handling. Looking at the code you'll see I assume input to be correct in almost 100% of the API calls.
+* There is no proper exception handling. Following the lines on input handling, there is also no exception being handled in the code, so errors found while the scripts are executed would simply throw exceptions on the console.
+* MongoDB not prepared for massive data. I didn't look into creating indexed for some important document attributes used by aggregation functions. For sure if a considerable amount of data is present in MongoDB performance will be poor.
+* Search related APIs with no pagination. Both the list of all songs and searching by message do not have the option for pagination on the result set exposed. Also, no records limit is imposed in the calls to MongoDB.
 
 ## How To Run It?
 1. Assuming MongoDB to be running locally at the default port (otherwise **contants.py** needs to be changed accordingly).
